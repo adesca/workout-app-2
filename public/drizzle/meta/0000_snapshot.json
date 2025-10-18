@@ -1,0 +1,193 @@
+{
+  "id": "d7541c1b-3170-4f4b-9f1d-099df62472f4",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.bodyparts": {
+      "name": "bodyparts",
+      "schema": "",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.equipment": {
+      "name": "equipment",
+      "schema": "",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.exercise_to_secondary_muscles": {
+      "name": "exercise_to_secondary_muscles",
+      "schema": "",
+      "columns": {
+        "exerciseId": {
+          "name": "exerciseId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "secondaryMuscleId": {
+          "name": "secondaryMuscleId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "exercise_to_secondary_muscles_exerciseId_exercises_exerciseId_fk": {
+          "name": "exercise_to_secondary_muscles_exerciseId_exercises_exerciseId_fk",
+          "tableFrom": "exercise_to_secondary_muscles",
+          "tableTo": "exercises",
+          "columnsFrom": [
+            "exerciseId"
+          ],
+          "columnsTo": [
+            "exerciseId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "exercise_to_secondary_muscles_secondaryMuscleId_muscles_name_fk": {
+          "name": "exercise_to_secondary_muscles_secondaryMuscleId_muscles_name_fk",
+          "tableFrom": "exercise_to_secondary_muscles",
+          "tableTo": "muscles",
+          "columnsFrom": [
+            "secondaryMuscleId"
+          ],
+          "columnsTo": [
+            "name"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "exercise_to_secondary_muscles_exerciseId_secondaryMuscleId_pk": {
+          "name": "exercise_to_secondary_muscles_exerciseId_secondaryMuscleId_pk",
+          "columns": [
+            "exerciseId",
+            "secondaryMuscleId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.exercises": {
+      "name": "exercises",
+      "schema": "",
+      "columns": {
+        "exerciseId": {
+          "name": "exerciseId",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gifUrl": {
+          "name": "gifUrl",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instructions": {
+          "name": "instructions",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "targetMuscles": {
+          "name": "targetMuscles",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "exercises_targetMuscles_muscles_name_fk": {
+          "name": "exercises_targetMuscles_muscles_name_fk",
+          "tableFrom": "exercises",
+          "tableTo": "muscles",
+          "columnsFrom": [
+            "targetMuscles"
+          ],
+          "columnsTo": [
+            "name"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.muscles": {
+      "name": "muscles",
+      "schema": "",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
