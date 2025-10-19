@@ -1,6 +1,6 @@
 import './App.css'
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {SearchFilters} from "./components/SearchFilters.tsx";
+import {RandomExercises} from "./components/randomExercises/RandomExercises.tsx";
 
 
 
@@ -10,7 +10,7 @@ function App() {
     return (
         <>
             <QueryClientProvider client={queryClient} >
-                <SearchFilters />
+                <RandomExercises />
             </QueryClientProvider>
 
         </>

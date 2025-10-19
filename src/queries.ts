@@ -26,11 +26,11 @@ async function getBodyParts(db: PgliteDatabase<typeof Schema> & { $client: PGlit
     return db.select().from(BodyPartsTable);
 }
 
-export function useSearchExercises({equipment, bodyParts}: { equipment: string[], bodyParts: string }) {
+export function useSearchExercises({equipment, bodyParts, enabled}: { equipment: string[], bodyParts: string, enabled?: boolean }) {
     const db = useDatabase();
 
     return useQuery({
-        enabled: false,
+        enabled: enabled,
         queryKey: ['search-exercises', bodyParts, equipment],
         queryFn: () => searchExercises({equipment, bodyParts}, db)
     })
