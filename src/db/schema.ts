@@ -1,4 +1,4 @@
-import {json, pgTable, primaryKey, varchar} from "drizzle-orm/pg-core";
+import {json, pgTable, varchar} from "drizzle-orm/pg-core";
 import {relations} from "drizzle-orm";
 
 export const ExercisesTable = pgTable('exercises', {
@@ -7,7 +7,9 @@ export const ExercisesTable = pgTable('exercises', {
     name: varchar().notNull(),
     gifUrl: varchar().notNull(),
     instructions: json().$type<string[]>(),
-    targetMuscles: varchar().references(() => MusclesTable.name)
+    targetMuscles: varchar(),
+    bodyParts: varchar(),
+    secondaryMuscles: varchar().array()
 })
 
 export const MusclesTable = pgTable('muscles', {
@@ -36,22 +38,8 @@ export const MusclesRelations = relations(MusclesTable, ({many}) => ({
     exerciseToSecondaryMuscles: many(ExercisesTable)
 }))
 
-export const ExerciseToSecondaryMusclesTable = pgTable(
-    'exercise_to_secondary_muscles', {
-        exerciseId: varchar().notNull().references(() => ExercisesTable.exerciseId, {onDelete: 'cascade'}),
-        secondaryMuscleId: varchar().notNull().references(() => MusclesTable.name, {onDelete: 'set null'})
-    },
-    (t) => [primaryKey({columns: [t.exerciseId, t.secondaryMuscleId]})]
-)
-
-export const exerciseToSecondaryMuscleRelations = relations(ExerciseToSecondaryMusclesTable, ({one}) => ({
-    exercise: one(ExercisesTable, {fields: [ExerciseToSecondaryMusclesTable.exerciseId], references: [ExercisesTable.exerciseId]}),
-    secondaryMuscle: one(MusclesTable, {fields: [ExerciseToSecondaryMusclesTable.secondaryMuscleId], references: [MusclesTable.name]})
-}))
 
 export const Schema = {
     ExercisesTable, MusclesTable, BodyPartsTable, EquipmentTable, ExerciseRelations,
-    ExerciseToSecondaryMusclesTable,
-    exerciseToSecondaryMuscleRelations,
     MusclesRelations
 }

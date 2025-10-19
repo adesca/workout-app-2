@@ -1,6 +1,6 @@
 import './App.css'
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {SearchFilters} from "./SearchFilters.tsx";
+import {SearchFilters} from "./components/SearchFilters.tsx";
 
 
 

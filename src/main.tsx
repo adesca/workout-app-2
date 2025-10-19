@@ -13,7 +13,6 @@ import {
     BodyPartsTable,
     EquipmentTable,
     ExercisesTable,
-    ExerciseToSecondaryMusclesTable,
     MusclesTable,
     Schema
 } from "./db/schema.ts";
@@ -56,23 +55,14 @@ async function setupDBAndMigrate(): Promise<PgliteDatabase<typeof Schema> & { $c
         return ({
             ...ex,
             targetMuscles: ex.targetMuscles[0],
-            equipment: ex.equipments[0]
+            equipment: ex.equipments[0],
+            bodyParts: ex.bodyParts[0]
         })
     })
 
-    const mappedExerciseToSecondaryMuscles: Array<typeof ExerciseToSecondaryMusclesTable.$inferInsert> = exercises.flatMap(ex => {
-        return ex.secondaryMuscles.map(sm => ({
-            exerciseId: ex.exerciseId,
-            secondaryMuscleId: sm
-        }))
-    })
-
     await db.delete(ExercisesTable);
-    await db.delete(ExerciseToSecondaryMusclesTable);
 
     await db.insert(ExercisesTable).values(mappedExercises);
-    await db.insert(ExerciseToSecondaryMusclesTable).values(mappedExerciseToSecondaryMuscles);
-
     return db;
 }
 
