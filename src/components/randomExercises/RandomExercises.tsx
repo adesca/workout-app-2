@@ -6,6 +6,7 @@ import {or} from "drizzle-orm/sql/expressions/conditions";
 import type {PgliteDatabase} from "drizzle-orm/pglite/driver";
 import type {PGlite} from "@electric-sql/pglite";
 import {useState} from "react";
+import {Accordion} from "../Accordion.tsx";
 
 const upperBodyMuscles = [
     "neck",
@@ -46,65 +47,50 @@ function Exercise({bodyPartFocus, bodyParts}: { bodyPartFocus: string, bodyParts
         queryFn: () => buildDBQuery(db, bodyParts)
     })
 
-    const [isOpen, setIsOpen] = useState<boolean>(false)
-
     if (isLoading) return "loading...";
     else if (isSuccess) {
         const {randomExercise: randomEx} = data
 
         return <div className={"column"}>
-            <div className={'card'}>
-                <header className={'card-header'} onClick={() => {
-                    setIsOpen(o => !o)
-                }}>
-                    <p className="card-header-title">{bodyPartFocus}: {randomEx.name}</p>
-                    <button className="card-header-icon" aria-label="more options">
-                      <span className="icon">
-                        <i className="fas fa-angle-down" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                </header>
-                <div className={`card-content ${isOpen ? "" : "is-hidden"}`}>
-                    <table className={'table'}>
-                        <tbody>
-                        <tr>
-                            <th>Name</th>
-                            <td>{randomEx.name}</td>
-                        </tr>
-                        <tr>
-                            <th>Primary muscle group</th>
-                            <td>{randomEx.targetMuscles}</td>
-                        </tr>
+            <Accordion header={`${bodyPartFocus}: ${randomEx.name}`} footerButtons={
+                [{text: 'Reroll', onClick: refetch}]
+            } >
+                <table className={'table'}>
+                    <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td>{randomEx.name}</td>
+                    </tr>
+                    <tr>
+                        <th>Primary muscle group</th>
+                        <td>{randomEx.targetMuscles}</td>
+                    </tr>
 
-                        <tr>
-                            <th>Secondary muscle groups</th>
-                            <td>{(randomEx.secondaryMuscles || []).join(', ')}</td>
-                        </tr>
-                        <tr>
-                            <th>Equipment needed</th>
-                            <td>{randomEx.equipment}</td>
-                        </tr>
-                        <tr>
-                            <th>GIF</th>
-                            <td><img alt={randomEx.name} src={randomEx.gifUrl}/></td>
-                        </tr>
-                        <tr>
-                            <th>Instructions</th>
-                            <td>
-                                <ol>
-                                    {(randomEx.instructions || [])
-                                        .map(i => i.replace(/Step:+\d/, ''))
-                                        .map(i => <li>{i}</li>)}
-                                </ol>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <footer className={'card-footer'}>
-                    <div className={'card-footer-item'} onClick={refetch}>Reroll</div>
-                </footer>
-            </div>
+                    <tr>
+                        <th>Secondary muscle groups</th>
+                        <td>{(randomEx.secondaryMuscles || []).join(', ')}</td>
+                    </tr>
+                    <tr>
+                        <th>Equipment needed</th>
+                        <td>{randomEx.equipment}</td>
+                    </tr>
+                    <tr>
+                        <th>GIF</th>
+                        <td><img alt={randomEx.name} src={randomEx.gifUrl}/></td>
+                    </tr>
+                    <tr>
+                        <th>Instructions</th>
+                        <td>
+                            <ol>
+                                {(randomEx.instructions || [])
+                                    .map(i => i.replace(/Step:+\d/, ''))
+                                    .map(i => <li>{i}</li>)}
+                            </ol>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </Accordion>
         </div>
     }
 }

@@ -8,7 +8,7 @@ import { or} from "drizzle-orm/sql/expressions/conditions";
 
 export function useEquipment() {
     const db = useDatabase();
-    return useQuery({queryKey: ['db', 'exercises'], queryFn: () => getEquipment(db)})
+    return useQuery({queryKey: ['db', 'equipment'], queryFn: () => getEquipment(db)})
 }
 
 async function getEquipment(db: PgliteDatabase<typeof Schema> & { $client: PGlite }) {
