@@ -21,7 +21,10 @@ function useGetAllExercises() {
 
 export function ExerciseSearchComponent(props: Props) {
     const [searchText, setSearchText] = useState("")
+    const [equipmentFilter, setEquipmentFilter] = useState<Record<string, boolean>>({})
     const {isSuccess, data} = useGetAllExercises();
+
+    console.log(JSON.stringify(equipmentFilter));
 
     function handleCheck(e: ChangeEvent<HTMLInputElement>, data: {
         targetMuscles: string,
@@ -33,12 +36,31 @@ export function ExerciseSearchComponent(props: Props) {
         }))
     }
 
+    function handleEquipmentCheck(ev: ChangeEvent<HTMLInputElement>) {
+        // console.log(ev)
+        setEquipmentFilter(e => ({
+            ...e,
+            [ev.target.name]: ev.target.checked
+        }))
+    }
+
     let exerciseOptions;
     if (isSuccess) {
         exerciseOptions = data
             .filter(e => {
                 if (searchText === '') return true;
                 return e.name.includes(searchText);
+            })
+            .filter(e => {
+                const visibleEquipment = Object.entries(equipmentFilter)
+                    .filter(([, showEquipment]) => showEquipment)
+                    .map(([eq]) => eq);
+
+                if (visibleEquipment.length === 0) {
+                    return true
+                } else {
+                    return visibleEquipment.includes(e.equipment);
+                }
             })
             .map(exercise => {
                 return <label key={exercise.exerciseId} className="panel-block">
@@ -51,8 +73,15 @@ export function ExerciseSearchComponent(props: Props) {
     return <nav className="panel column is-narrow">
         <p className="panel-heading">Exercises</p>
         <div className="panel-block">
+            <label className={'pr-2'}>
+                <input type={'checkbox'} name={'dumbbell'} onChange={handleEquipmentCheck}/>
+                Dumbbell
+            </label>
+            <label className={'pr-2'}>
+                <input type={'checkbox'} name={'barbell'} onChange={handleEquipmentCheck}/>Barbell
+            </label>
             <label>
-                <input type={'checkbox'}/> Dumbell
+                <input type={'checkbox'} name={'body weight'} onChange={handleEquipmentCheck}/>Body Weight
             </label>
         </div>
 

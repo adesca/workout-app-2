@@ -3,7 +3,7 @@ import {relations} from "drizzle-orm";
 
 export const ExercisesTable = pgTable('exercises', {
     exerciseId: varchar().primaryKey(),
-    equipment: varchar(), // can't be null cause it was added via migration
+    equipment: varchar().notNull(), // can't be null cause it was added via migration
     name: varchar().notNull(),
     gifUrl: varchar().notNull(),
     instructions: json().$type<string[]>(),
