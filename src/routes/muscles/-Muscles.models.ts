@@ -1,0 +1,1 @@
+export type SelectedExerciseState = Record<string, { targetMuscles: string, secondaryMuscles: string[] } | undefined>

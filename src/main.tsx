@@ -45,7 +45,7 @@ async function setupDBAndMigrate(): Promise<PgliteDatabase<typeof Schema> & { $c
         }
     }
 
-    const db= drizzle(client, {schema: Schema});
+    const db = drizzle(client, {schema: Schema});
 
     await db.insert(MusclesTable).values(muscles).onConflictDoNothing();
     await db.insert(BodyPartsTable).values(bodyparts).onConflictDoNothing();

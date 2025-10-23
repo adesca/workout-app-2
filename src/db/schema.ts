@@ -7,9 +7,9 @@ export const ExercisesTable = pgTable('exercises', {
     name: varchar().notNull(),
     gifUrl: varchar().notNull(),
     instructions: json().$type<string[]>(),
-    targetMuscles: varchar(),
+    targetMuscles: varchar().notNull(),
     bodyParts: varchar(),
-    secondaryMuscles: varchar().array()
+    secondaryMuscles: varchar().array().notNull()
 })
 
 export const MusclesTable = pgTable('muscles', {
