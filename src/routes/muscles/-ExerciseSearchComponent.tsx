@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 import {ExercisesTable} from "../../db/schema.ts";
 import type {SelectedExerciseState} from "./-Muscles.models.ts";
 import * as React from "react";
+import {BasicEquipmentFilter} from "../../components/BasicEquipmentFilter.tsx";
 
 interface Props {
     setSelected: React.Dispatch<React.SetStateAction<SelectedExerciseState>>
@@ -21,10 +22,8 @@ function useGetAllExercises() {
 
 export function ExerciseSearchComponent(props: Props) {
     const [searchText, setSearchText] = useState("")
-    const [equipmentFilter, setEquipmentFilter] = useState<Record<string, boolean>>({})
+    const [selectedEquipment, setSelectedEquipment] = useState<string[]>([])
     const {isSuccess, data} = useGetAllExercises();
-
-    console.log(JSON.stringify(equipmentFilter));
 
     function handleCheck(e: ChangeEvent<HTMLInputElement>, data: {
         targetMuscles: string,
@@ -36,13 +35,7 @@ export function ExerciseSearchComponent(props: Props) {
         }))
     }
 
-    function handleEquipmentCheck(ev: ChangeEvent<HTMLInputElement>) {
-        // console.log(ev)
-        setEquipmentFilter(e => ({
-            ...e,
-            [ev.target.name]: ev.target.checked
-        }))
-    }
+
 
     let exerciseOptions;
     if (isSuccess) {
@@ -52,9 +45,7 @@ export function ExerciseSearchComponent(props: Props) {
                 return e.name.includes(searchText);
             })
             .filter(e => {
-                const visibleEquipment = Object.entries(equipmentFilter)
-                    .filter(([, showEquipment]) => showEquipment)
-                    .map(([eq]) => eq);
+                const visibleEquipment = selectedEquipment
 
                 if (visibleEquipment.length === 0) {
                     return true
@@ -73,16 +64,7 @@ export function ExerciseSearchComponent(props: Props) {
     return <nav className="panel column is-narrow">
         <p className="panel-heading">Exercises</p>
         <div className="panel-block">
-            <label className={'pr-2'}>
-                <input type={'checkbox'} name={'dumbbell'} onChange={handleEquipmentCheck}/>
-                Dumbbell
-            </label>
-            <label className={'pr-2'}>
-                <input type={'checkbox'} name={'barbell'} onChange={handleEquipmentCheck}/>Barbell
-            </label>
-            <label>
-                <input type={'checkbox'} name={'body weight'} onChange={handleEquipmentCheck}/>Body Weight
-            </label>
+            <BasicEquipmentFilter onEquipmentSelectChange={(selected) => setSelectedEquipment(selected)} />
         </div>
 
         <div className="panel-block">

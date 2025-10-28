@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkoutTrackerIndexRouteImport } from './routes/workout-tracker/index'
 import { Route as MusclesIndexRouteImport } from './routes/muscles/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkoutTrackerIndexRoute = WorkoutTrackerIndexRouteImport.update({
+  id: '/workout-tracker/',
+  path: '/workout-tracker/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MusclesIndexRoute = MusclesIndexRouteImport.update({
@@ -26,27 +32,31 @@ const MusclesIndexRoute = MusclesIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/muscles': typeof MusclesIndexRoute
+  '/workout-tracker': typeof WorkoutTrackerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/muscles': typeof MusclesIndexRoute
+  '/workout-tracker': typeof WorkoutTrackerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/muscles/': typeof MusclesIndexRoute
+  '/workout-tracker/': typeof WorkoutTrackerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/muscles'
+  fullPaths: '/' | '/muscles' | '/workout-tracker'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/muscles'
-  id: '__root__' | '/' | '/muscles/'
+  to: '/' | '/muscles' | '/workout-tracker'
+  id: '__root__' | '/' | '/muscles/' | '/workout-tracker/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MusclesIndexRoute: typeof MusclesIndexRoute
+  WorkoutTrackerIndexRoute: typeof WorkoutTrackerIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workout-tracker/': {
+      id: '/workout-tracker/'
+      path: '/workout-tracker'
+      fullPath: '/workout-tracker'
+      preLoaderRoute: typeof WorkoutTrackerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/muscles/': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MusclesIndexRoute: MusclesIndexRoute,
+  WorkoutTrackerIndexRoute: WorkoutTrackerIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
