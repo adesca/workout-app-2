@@ -15,25 +15,32 @@ export function Typeahead({search, onSelect}: Props) {
             (result: string[]) => {
                 // console.log('results', result)
                 setDisplayedOptions(result)
-            }, () => {}
+            }, () => {
+            }
         )
     }
 
-    function handleOptionClick(option: string) {
+    function handleOptionClick(option: string, ev: {preventDefault: () => void}) {
+        ev.preventDefault();
+        if (ref.current) {
+            ref.current.value = option;
+        }
         setDisplayedOptions([]);
         onSelect(option)
+
     }
 
     return <div className={`dropdown ${displayedOptions.length > 0 ? 'is-active' : ''}`}>
         <div>
-            <input onInput={runSearch} ref={ref}/>
+            <input className={'input'} type={'text'} onInput={runSearch} ref={ref}/>
         </div>
         <div className="dropdown-menu" id="dropdown-menu3" role="menu">
             <div className="dropdown-content">
                 <div key={'literal'} className={'dropdown-item'}
-                     onClick={() => handleOptionClick(ref.current?.value || "")}>"{ref.current?.value}"</div>
+                     onClick={(e) => handleOptionClick(ref.current?.value || "", e)}>"{ref.current?.value}"
+                </div>
                 <hr className="dropdown-divider"/>
-                {displayedOptions.map(option => <div key={option} onClick={() => handleOptionClick(option)}
+                {displayedOptions.map(option => <div key={option} onClick={(e) => handleOptionClick(option, e)}
                                                      className={'dropdown-item'}>{option}</div>)}
 
                 <a href="#" className="dropdown-item"> More </a>

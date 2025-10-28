@@ -6,6 +6,7 @@ import {and, eq, like} from "drizzle-orm";
 import {BasicEquipmentFilter} from "../../components/BasicEquipmentFilter.tsx";
 import {useState} from "react";
 import {or} from "drizzle-orm/sql/expressions/conditions";
+import {Accordion} from "../../components/Accordion.tsx";
 
 export const Route = createFileRoute('/workout-tracker/')({
     component: RouteComponent,
@@ -44,24 +45,22 @@ function RouteComponent() {
             [option]: newValue
         }))}/>
 
-        <table className={'table is-narrow'}>
-            <thead>
-            <tr>
-                <th>Exercise</th>
-                <th>Set 1</th>
-                <th>Set 2</th>
-                <th>Set 3</th>
-                <th>How did it feel?</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><Typeahead search={searchExercises} onSelect={(s) => {
-                    console.log('selected ', s)
-                }}/></td>
-            </tr>
-            </tbody>
-        </table>
+        <Accordion header={<Typeahead search={searchExercises} onSelect={(s) => {
+            console.log('selected ', s);
+        }}/>} footerButtons={[]}>
+            Set 1:
+            <div className={'fixed-grid has-2-cols'}>
+                <div className={'grid'}>
+                    <div className={'cell'}>
+                        <input className="input" type="text" placeholder="Weight (lb)"/>
+                    </div>
+
+                    <div className={'cell'}>
+                        <input className="input" type="text" placeholder="Reps"/>
+                    </div>
+                </div>
+            </div>
+        </Accordion>
 
         {/*<div className={'fixed-grid has-5-cols'}>*/}
         {/*    <div className={'grid'}>*/}
