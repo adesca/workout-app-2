@@ -1,60 +1,53 @@
-import {type ChangeEvent, type SetStateAction, useRef, useState} from "react";
+import {type ChangeEvent, useRef, useState} from "react";
 
-interface Props {
-    search: (input: string) => Promise<string[]>;
-    onSelect: (selectedInput: string) => void;
+interface Props <T> {
+    search: (input: string) => Promise<T[]>;
+    onSelect: (selectedInput: string, data?: T) => void;
+    projection: (searchOutput: T) => string;
     initialValue?: string;
 }
 
-export function Typeahead({search, onSelect, initialValue}: Props) {
+export function Typeahead<T>({search, onSelect, initialValue, projection}: Props<T>) {
     const ref = useRef<HTMLInputElement | null>(null);
-    const [displayedOptions, setDisplayedOptions] = useState<string[]>([])
+    const [displayedOptions, setDisplayedOptions] = useState<T[]>([])
 
 
     function runSearch(ev: ChangeEvent<HTMLInputElement>) {
         search(ev.target.value).then(
-            (result: string[]) => {
-                // console.log('results', result)
+            (result) => {
                 setDisplayedOptions(result.slice(0, 5))
             }, () => {
             }
         )
     }
 
-    function handleOptionClick(option: string, ev: { preventDefault: () => void }) {
+    function handleOptionClick(selectedText: string, optionData?: T) {
         if (ref.current) {
-            ref.current.value = option;
+            ref.current.value = selectedText;
         }
         setDisplayedOptions([]);
-        onSelect(option)
+        onSelect(selectedText, optionData)
     }
 
-    function clearInput() {
-        console.log('ghere')
-        if (ref.current) {
-            ref.current.value = "";
-        }
-        setDisplayedOptions([]);
-
-    }
+    const displayedOptionsHtml = displayedOptions.map(option => {
+        const text = projection(option)
+        return <div key={JSON.stringify(option)}
+                    onClick={() => handleOptionClick(text, option)}
+                    className={'dropdown-item'}>{text}</div>
+    })
 
     return <div className={`dropdown ${displayedOptions.length > 0 ? 'is-active' : ''}`}>
         <div className={''}>
             <input className={'input'} type={'text'} onInput={runSearch} onClick={(e) => {console.log('clicked', e)}} ref={ref} defaultValue={initialValue}/>
 
-            {/*<span className="icon is-small">*/}
-            {/*  <i className="fa-solid fa-xmark" onClick={clearInput}></i>*/}
-            {/*</span>*/}
-
         </div>
         <div className="dropdown-menu" id="dropdown-menu3" role="menu">
             <div className="dropdown-content">
                 <div key={'literal'} className={'dropdown-item'}
-                     onClick={(e) => handleOptionClick(ref.current?.value || "", e)}>"{ref.current?.value}"
+                     onClick={() => handleOptionClick(ref.current?.value || "")}>"{ref.current?.value}"
                 </div>
                 <hr className="dropdown-divider"/>
-                {displayedOptions.map(option => <div key={option} onClick={(e) => handleOptionClick(option, e)}
-                                                     className={'dropdown-item'}>{option}</div>)}
+                {displayedOptionsHtml}
 
                 <a href="#" className="dropdown-item"> More </a>
             </div>

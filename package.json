@@ -11,7 +11,9 @@
     "migrate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@barehera/query-key-factory": "^1.0.3",
     "@electric-sql/pglite": "^0.3.11",
+    "@lukemorales/query-key-factory": "github:lukemorales/query-key-factory",
     "@mjcdev/react-body-highlighter": "^0.0.4",
     "@tanstack/react-query": "^5.90.3",
     "@tanstack/react-router": "^1.133.22",

@@ -24,10 +24,7 @@ function RouteComponent() {
         .map(eName => eq(ExercisesTable.equipment, eName))
 
     async function searchExercises(input: string) {
-        const queryResult = await db.selectDistinctOn([ExercisesTable.exerciseId], {
-            exerciseName: ExercisesTable.name,
-            equipment: ExercisesTable.equipment
-        }).from(ExercisesTable)
+        const queryResult = await db.selectDistinctOn([ExercisesTable.exerciseId]).from(ExercisesTable)
             .where(
                 and(
                     like(ExercisesTable.name, `%${input}%`),
@@ -35,11 +32,20 @@ function RouteComponent() {
                 )
             )
 
-        console.log(queryResult)
-
-        return [...new Set([...queryResult.map(q => q.exerciseName)])];
+        return queryResult
     }
 
+    function HeaderTypeahead(props: { exerciseName: string }) {
+        return <Typeahead initialValue={props.exerciseName} search={searchExercises} onSelect={(s, data) => {
+            dispatch({
+                type: 'rename-exercise',
+                exerciseName: props.exerciseName,
+                newExerciseName: s,
+                exerciseDetails: data
+            });
+
+        }} projection={({name}) => name}/>
+    }
 
 
     return <div>
@@ -49,18 +55,18 @@ function RouteComponent() {
         }))}/>
 
         {Object.entries(state)
-            .filter(([,details]) => details !== undefined)
+            .filter(([, details]) => details !== undefined)
             .map(([exerciseName, exerciseDetails]) => {
-            return <Accordion key={exerciseName} header={<Typeahead initialValue={exerciseName} search={searchExercises} onSelect={(s) => {
-                dispatch({
-                    type: 'rename-exercise',
-                    exerciseName: exerciseName,
-                    newExerciseName: s
-                })
-
-            }}/>} footerButtons={[]}>
-                {exerciseDetails!.sets.map(((set, idx) => <span  key={set.setNumber}>
+                return <Accordion key={exerciseName} header={<HeaderTypeahead exerciseName={exerciseName}/>}
+                                  footerButtons={[]}>
+                    {exerciseDetails?.exerciseInfo && <Accordion header={"Info"} footerButtons={[]}>
+                        <div>Equipment needed: {exerciseDetails.exerciseInfo.equipment}</div>
+                        <img alt={exerciseDetails.exerciseInfo.name} src={exerciseDetails.exerciseInfo.gifUrl}/>
+                        {exerciseDetails.exerciseInfo.instructions!.map(i => <div>{i}</div>)}
+                    </Accordion>}
+                    {exerciseDetails!.sets.map(((set, idx) => <span key={set.setNumber}>
                     Set {set.setNumber}:
+
                     <div className={'fixed-grid has-2-cols'}>
                         <div className={'grid'}>
                             <div className={'cell'}>
@@ -78,12 +84,12 @@ function RouteComponent() {
                     </div>
                 </span>))}
 
-                <button className={'button'}>
-                    <span className="icon is-small"><i className="fas fa-plus"></i></span>
-                    <span>Set</span>
-                </button>
+                    <button className={'button'}>
+                        <span className="icon is-small"><i className="fas fa-plus"></i></span>
+                        <span>Set</span>
+                    </button>
 
-            </Accordion>
+                </Accordion>
             })}
 
         <AddExerciseButton searchExercises={searchExercises} dispatch={dispatch}/>

@@ -1,19 +1,22 @@
 import {useReducer} from "react";
+import {ExercisesTable} from "../../db/schema.ts";
 
 type WorkoutTrackerDataState = Record<string, {
     sets: Array<{ setNumber: number, weight: string, reps: string }>
+    exerciseInfo?: typeof ExercisesTable.$inferSelect
 } | undefined>
 
-type Actions = {
+export type Actions = {
     type: 'update-rep',
     setIndex: number, exerciseName: string, newReps: string
 } | {
     type: 'update-weight',
     setIndex: number, exerciseName: string, newWeight: string
-} | { type: 'add-exercise', exerciseName: string } | {
+} | { type: 'add-exercise', exerciseName: string, exerciseDetails?: typeof  ExercisesTable.$inferSelect} | {
     type: 'rename-exercise',
     exerciseName: string,
-    newExerciseName: string
+    newExerciseName: string,
+    exerciseDetails?: typeof ExercisesTable.$inferSelect
 }
 
 function reducer(state: WorkoutTrackerDataState, action: Actions) {
@@ -38,6 +41,7 @@ function reducer(state: WorkoutTrackerDataState, action: Actions) {
         }
         case 'add-exercise':
             workingState[action.exerciseName] = {
+                exerciseInfo: action.exerciseDetails,
                 sets: [{setNumber: 1, weight: '', reps: ''}, {setNumber: 2, weight: '', reps: ''}, {
                     setNumber: 3,
                     weight: '',
@@ -47,6 +51,8 @@ function reducer(state: WorkoutTrackerDataState, action: Actions) {
             break;
         case 'rename-exercise':
             workingState[action.newExerciseName] = workingState[action.exerciseName]
+            workingState[action.newExerciseName]!.exerciseInfo = action.exerciseDetails
+
             workingState[action.exerciseName] = undefined;
             break;
         default:

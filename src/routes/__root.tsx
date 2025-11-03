@@ -8,8 +8,7 @@ const navbarItems = links.map(({route, text}) => <Link key={route} to={route} cl
 </Link>)
 
 const RootLayout = () => {
-    const [navbarIsOpen, setNavbarIsOpen] = useState<boolean>(true);
-    console.log('nav is open', navbarIsOpen)
+    const [navbarIsOpen, setNavbarIsOpen] = useState<boolean>(false);
 
     return (
         <div>
