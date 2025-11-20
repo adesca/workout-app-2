@@ -25,10 +25,7 @@ export function ExerciseSearchComponent(props: Props) {
     const [selectedEquipment, setSelectedEquipment] = useState<string[]>([])
     const {isSuccess, data} = useGetAllExercises();
 
-    function handleCheck(e: ChangeEvent<HTMLInputElement>, data: {
-        targetMuscles: string,
-        secondaryMuscles: string[]
-    }) {
+    function handleCheck(e: ChangeEvent<HTMLInputElement>, data: typeof ExercisesTable.$inferSelect) {
         props.setSelected(s => ({
             ...s,
             [e.target.name]: e.target.checked ? data : undefined

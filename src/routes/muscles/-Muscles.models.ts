@@ -1,1 +1,3 @@
-export type SelectedExerciseState = Record<string, { targetMuscles: string, secondaryMuscles: string[] } | undefined>
+import {ExercisesTable} from "../../db/schema.ts";
+
+export type SelectedExerciseState = Record<string, typeof ExercisesTable.$inferSelect | undefined>
