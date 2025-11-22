@@ -9,6 +9,7 @@ import {or} from "drizzle-orm/sql/expressions/conditions";
 import {Accordion} from "../../components/Accordion.tsx";
 import {useWorkoutTrackerData} from "./-WorkoutTrackerHook.tsx";
 import {AddExerciseButton} from "./-AddExerciseButton.tsx";
+import {WarmupAccordion} from "./-WarmupAccordion.tsx";
 
 export const Route = createFileRoute('/workout-tracker/')({
     component: RouteComponent,
@@ -53,6 +54,8 @@ function RouteComponent() {
             ...e,
             [option]: newValue
         }))}/>
+
+        <WarmupAccordion />
 
         {Object.entries(state)
             .filter(([, details]) => details !== undefined)
