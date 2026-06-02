@@ -21,7 +21,7 @@ import {DatabaseProvider} from "./db/DBProvider.tsx";
 async function setupDBAndMigrate(): Promise<PgliteDatabase<typeof Schema> & { $client: PGlite }> {
     const client = new PGlite('idb://my-data')
 
-    const drizzleMigrationJournal = await (await fetch('/drizzle/meta/_journal.json')).json()
+    const drizzleMigrationJournal = await (await fetch('./drizzle/meta/_journal.json')).json()
 
 
     const lsMigrationJournal = localStorage.getItem('migrations-run')
@@ -37,7 +37,7 @@ async function setupDBAndMigrate(): Promise<PgliteDatabase<typeof Schema> & { $c
         if (migrationJournal[migration]) {
             console.log('skipping running ', migration, ' because it already ran');
         } else {
-            const migrationText = await (await fetch(`/drizzle/${migration}.sql`)).text()
+            const migrationText = await (await fetch(`./drizzle/${migration}.sql`)).text()
             await client.exec(migrationText);
             migrationJournal[migration] = true;
             localStorage.setItem('migrations-run', JSON.stringify(migrationJournal))
